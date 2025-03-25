@@ -5,21 +5,22 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
+  seed     = "node ./scripts/seed.ts"
 }
 
 model Account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?  @db.Text
-  access_token       String?  @db.Text
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?  @db.Text
-  session_state      String?
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -61,19 +62,19 @@ enum SessionFrequency {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  firstName     String
-  lastName      String
-  role          UserRole
-  emailVerified DateTime?
+  id                String    @id @default(cuid())
+  email             String    @unique
+  firstName         String
+  lastName          String
+  role              UserRole
+  emailVerified     DateTime?
   verificationToken String?
-  hashedPassword String?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  hashedPassword    String?
+  image             String?
+  accounts          Account[]
+  sessions          Session[]
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 
   // Mentor specific fields
   mentorProfile MentorProfile?
@@ -83,96 +84,95 @@ model User {
 }
 
 model MentorProfile {
-  id            String    @id @default(cuid())
-  userId        String    @unique
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id            String         @id @default(cuid())
+  userId        String         @unique
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   bio           String
   expertise     String[]
-  hourlyRate    Float 
-  availability  Json      // Store available time slots as JSON
-  courses       Course[]  // Courses the mentor can teach
+  hourlyRate    Float
+  availability  Json // Store available time slots as JSON
+  courses       Course[] // Courses the mentor can teach
   tutorSessions TutorSession[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 }
 
 model LearnerProfile {
-  id            String    @id @default(cuid())
-  userId        String    @unique
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id            String         @id @default(cuid())
+  userId        String         @unique
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   enrollments   Enrollment[]
   tutorSessions TutorSession[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 }
 
 model Course {
-  id                  String           @id @default(cuid())
-  title               String
-  description         String
-  audience            String
-  topics              String[]
-  deliveryMode        String
-  reschedulingPolicy  String
-  paymentMethods      String[]
-  specialOffers       String[]
-  mentors             MentorProfile[]
-  enrollments         Enrollment[]
-  pricing             CoursePrice[]
-  createdAt           DateTime         @default(now())
-  updatedAt           DateTime         @updatedAt
+  id                 String          @id @default(cuid())
+  title              String
+  description        String
+  audience           String
+  topics             String[]
+  deliveryMode       String
+  reschedulingPolicy String
+  paymentMethods     String[]
+  specialOffers      String[]
+  mentors            MentorProfile[]
+  enrollments        Enrollment[]
+  pricing            CoursePrice[]
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
 }
 
 model CoursePrice {
   id              String           @id @default(cuid())
   courseId        String
   course          Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  frequency       SessionFrequency 
-  sessionDuration Int              // Duration in minutes
-  price           Float            // Price in NGN
+  frequency       SessionFrequency
+  sessionDuration Int // Duration in minutes
+  price           Float // Price in NGN
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
 }
 
-
 model Enrollment {
-  id              String           @id @default(cuid())
-  learnerId       String
-  learner         LearnerProfile   @relation(fields: [learnerId], references: [id])
-  courseId        String
-  course          Course           @relation(fields: [courseId], references: [id])
-  frequency       SessionFrequency
-  startDate       DateTime
-  endDate         DateTime
-  payments        Payment[]
-  tutorSessions   TutorSession[]
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+  id            String           @id @default(cuid())
+  learnerId     String
+  learner       LearnerProfile   @relation(fields: [learnerId], references: [id])
+  courseId      String
+  course        Course           @relation(fields: [courseId], references: [id])
+  frequency     SessionFrequency
+  startDate     DateTime
+  endDate       DateTime
+  payments      Payment[]
+  tutorSessions TutorSession[]
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
 }
 
 model Payment {
-  id            String        @id @default(cuid())
-  enrollmentId  String
-  enrollment    Enrollment    @relation(fields: [enrollmentId], references: [id])
-  amount        Float
-  status        PaymentStatus
-  paymentDate   DateTime
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  id           String        @id @default(cuid())
+  enrollmentId String
+  enrollment   Enrollment    @relation(fields: [enrollmentId], references: [id])
+  amount       Float
+  status       PaymentStatus
+  paymentDate  DateTime
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 }
 
 model TutorSession {
-  id            String          @id @default(cuid())
-  enrollmentId  String
-  enrollment    Enrollment      @relation(fields: [enrollmentId], references: [id])
-  mentorId      String
-  mentor        MentorProfile   @relation(fields: [mentorId], references: [id])
-  learnerId     String
-  learner       LearnerProfile  @relation(fields: [learnerId], references: [id])
-  meetLink      String
-  startTime     DateTime
-  endTime       DateTime
-  status        String         // scheduled, completed, cancelled
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  id           String         @id @default(cuid())
+  enrollmentId String
+  enrollment   Enrollment     @relation(fields: [enrollmentId], references: [id])
+  mentorId     String
+  mentor       MentorProfile  @relation(fields: [mentorId], references: [id])
+  learnerId    String
+  learner      LearnerProfile @relation(fields: [learnerId], references: [id])
+  meetLink     String
+  startTime    DateTime
+  endTime      DateTime
+  status       String // scheduled, completed, cancelled
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
 }

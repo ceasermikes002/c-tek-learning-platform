@@ -99,7 +99,46 @@ const coursesData = [
       reschedulingPolicy: 'Flexible rescheduling allowed with 48-hour notice.',
       paymentMethods: ['Paystack', 'Bank Transfer'],
     },
+    {
+      id: 'web3',
+      title: 'Web3 and Smart Contract Development',
+      description:
+        'Learn Web3 fundamentals, Ethereum smart contract development with Solidity, and decentralized application (DApp) development.',
+      audience: 'Developers interested in blockchain technology and decentralized applications.',
+      topics: ['Web3', 'Ethereum Smart Contracts', 'Solidity', 'Decentralized Application (DApp) Development'],
+      pricing: [
+        { classesPerWeek: 1, duration: '2 hours', price: '45,000 NGN' },
+        { classesPerWeek: 2, duration: '2 hours', price: '80,000 NGN' },
+        { classesPerWeek: 3, duration: '2 hours', price: '110,000 NGN' },
+      ],
+      specialOffers: [
+        'Get 5% off your next month for each new student referred. (Coming Soon 😉)',
+        '10% discount for group classes (2-4 people). (Coming Soon 😉)',
+      ],
+      deliveryMode: 'All lessons take place online.',
+      reschedulingPolicy: 'Flexible rescheduling allowed with 48-hour notice.',
+      paymentMethods: ['Paystack', 'Bank Transfer'],
+    },
+    {
+      id: 'product-design',
+      title: 'Product Design (UI/UX)',
+      description:
+        'Master the principles of User Interface (UI) and User Experience (UX) design to create intuitive and visually appealing digital products.',
+      audience: 'Design enthusiasts and developers looking to enhance their UX/UI skills.',
+      topics: ['UI Design Principles', 'UX Research', 'Prototyping', 'Wireframing', 'Design Tools'],
+      pricing: [
+        { classesPerWeek: 1, duration: '2 hours', price: '40,000 NGN' },
+        { classesPerWeek: 2, duration: '2 hours', price: '70,000 NGN' },
+        { classesPerWeek: 3, duration: '2 hours', price: '100,000 NGN' },
+      ],
+      specialOffers: [
+        'Get 5% off your next month for each new student referred. (Coming Soon 😉)',
+        '10% discount for group classes (2-4 people). (Coming Soon 😉)',
+      ],
+      deliveryMode: 'All lessons take place online.',
+      reschedulingPolicy: 'Flexible rescheduling allowed with 48-hour notice.',
+      paymentMethods: ['Paystack', 'Bank Transfer'],
+    },
   ];
-  
-  export default coursesData;
-  
+
+export default coursesData;

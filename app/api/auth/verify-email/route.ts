@@ -20,10 +20,10 @@ export async function GET(req: NextRequest) {
     await prisma.user.update({
       where: { id: user.id },
       data: {
-        emailVerified: new Date(),
+        emailVerified: new Date(),  // Use the current date and time
         verificationToken: null, // Remove token after verification
       },
-    });
+    });    
 
     return NextResponse.json({ message: "Email verified successfully!" }, { status: 200 });
   } catch (error) {

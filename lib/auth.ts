@@ -25,7 +25,8 @@ export const authOptions: NextAuthOptions = {
             }
             return true;
         },
-        async session({ session, user }) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        async session({ session }: any) {
             if (session.user) {
                 const dbUser = await prisma.user.findUnique({
                     where: { email: session.user.email! }

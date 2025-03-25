@@ -1,12 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
-import { NextAuthOptions } from "next-auth";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
+import { NextAuthOptions } from "next-auth";
 
 export const authOptions: NextAuthOptions = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   adapter: PrismaAdapter(prisma) as any, // Temporary cast to resolve type mismatch
   providers: [
     CredentialsProvider({
@@ -21,12 +21,10 @@ export const authOptions: NextAuthOptions = {
         }
 
         const user = await prisma.user.findUnique({
-          where: {
-            email: credentials.email
-          }
+          where: { email: credentials.email }
         });
 
-        if (!user || !user?.hashedPassword) {
+        if (!user || !user.hashedPassword) {
           throw new Error("Invalid credentials");
         }
 
@@ -39,23 +37,29 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Invalid credentials");
         }
 
+        // Check if the user's email is verified
+        if (!user.emailVerified) {
+          throw new Error("Please verify your email before signing in.");
+        }
+
         return user;
       }
     })
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: any) {
       if (user) {
         return {
           ...token,
           role: user.role,
           firstName: user.firstName,
           lastName: user.lastName,
+          emailVerified: user.emailVerified,
         };
       }
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token }: any) {
       return {
         ...session,
         user: {
@@ -63,12 +67,14 @@ export const authOptions: NextAuthOptions = {
           role: token.role,
           firstName: token.firstName,
           lastName: token.lastName,
+          emailVerified: token.emailVerified,
         }
       };
     }
   },
   pages: {
     signIn: '/sign-in',
+    error: '/sign-in' // Redirect to sign-in page on error
   },
   session: {
     strategy: "jwt"

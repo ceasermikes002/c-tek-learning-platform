@@ -1,15 +1,25 @@
-// components/CoursesPage.tsx
 "use client";
 
-import React from 'react';
-import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { Boxes } from '@/components/ui/background-boxes';
-import { ArrowRight, BookOpen } from 'lucide-react';
-import coursesData from '@/data/coursesData';
-import { BackgroundGradient } from '@/components/ui/background-gradient';
+import React, { useState } from "react";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { Boxes } from "@/components/ui/background-boxes";
+import { ArrowRight, BookOpen } from "lucide-react";
+import coursesData from "@/data/coursesData";
+import { BackgroundGradient } from "@/components/ui/background-gradient";
 
 const CoursesPage = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const coursesPerPage = 4;
+
+  // Calculate total pages
+  const totalPages = Math.ceil(coursesData.length / coursesPerPage);
+
+  // Get current courses to display
+  const indexOfLastCourse = currentPage * coursesPerPage;
+  const indexOfFirstCourse = indexOfLastCourse - coursesPerPage;
+  const currentCourses = coursesData.slice(indexOfFirstCourse, indexOfLastCourse);
+
   return (
     <div className="bg-[#f9f9f9] min-h-screen">
       {/* Banner Section */}
@@ -48,7 +58,7 @@ const CoursesPage = () => {
         </div>
       </header>
 
-      {/* Enhanced Courses Section */}
+      {/* Courses Section with Pagination */}
       <section className="max-w-7xl mx-auto py-24 px-6">
         <motion.h2
           className="text-4xl font-bold text-center text-[#1c1b1b] mb-16"
@@ -59,8 +69,8 @@ const CoursesPage = () => {
           Our Courses
         </motion.h2>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {coursesData.map((course, index) => (
+        <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
+          {currentCourses.map((course, index) => (
             <motion.div
               key={course.id}
               initial={{ opacity: 0, y: 20 }}
@@ -79,15 +89,11 @@ const CoursesPage = () => {
                     {course.title}
                   </h3>
 
-                  <p className="text-gray-600 line-clamp-3">
-                    {course.description}
-                  </p>
+                  <p className="text-gray-600 line-clamp-3">{course.description}</p>
 
                   <Link href={`/courses/${course.id}`}>
                     <div className="mt-4 group flex items-center justify-between">
-                      <span className="text-[#f79920] font-semibold">
-                        Learn More
-                      </span>
+                      <span className="text-[#f79920] font-semibold">Learn More</span>
                       <ArrowRight className="w-5 h-5 text-[#f79920] group-hover:translate-x-1 transition-transform" />
                     </div>
                   </Link>
@@ -95,6 +101,27 @@ const CoursesPage = () => {
               </BackgroundGradient>
             </motion.div>
           ))}
+        </div>
+
+        {/* Pagination Controls */}
+        <div className="mt-10 flex justify-center items-center gap-4">
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className="px-4 py-2 bg-gray-300 rounded-md disabled:opacity-50"
+          >
+            Prev
+          </button>
+          <span className="text-lg font-semibold">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 bg-gray-300 rounded-md disabled:opacity-50"
+          >
+            Next
+          </button>
         </div>
       </section>
 
